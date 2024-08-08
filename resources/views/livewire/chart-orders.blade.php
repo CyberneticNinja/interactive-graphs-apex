@@ -87,6 +87,11 @@
             });
         }
     }">
+    @if($IsPdfGenerated)
+        <span>PDF SUCCESSFULLY GENERATED</span>
+    @else
+    @endif
+    
     <span class="block mb-2">Year:
         <select name="selectedYear" id="selectedYear" class="border bg-black text-white p-2 rounded mb-4" wire:model.live="selectedYear">
             @foreach ($availableYears as $year)
@@ -111,4 +116,7 @@
             <br/>
             <div id="pieChart" x-ref="pieCanvas"></div>
     </div>
+    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4" wire:click="downloadPdf">
+        Generate PDF
+    </button>
 </div>

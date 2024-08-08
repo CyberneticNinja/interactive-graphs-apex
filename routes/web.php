@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PdfController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,3 +15,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::view('/', 'chart')->name('chart');
+// Route::get('/pdf/{year}', [PdfController::class, 'showPdf']);
+// Route::get('/generate-pdf/{year}', [PdfController::class, 'generatePdf']);
+Route::get('/download-pdf/{year}', [PdfController::class, 'downloadPdf'])->name('download.pdf');

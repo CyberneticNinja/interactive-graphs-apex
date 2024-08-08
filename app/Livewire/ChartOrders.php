@@ -5,16 +5,22 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\Order;
 use Illuminate\Support\Facades\DB;
+use Spatie\Browsershot\Browsershot;
+use Spatie\LaravelPdf\Facades\Pdf;
+
+use function Spatie\LaravelPdf\Support\pdf;
 
 class ChartOrders extends Component
 {
     public $selectedYear;
     public $thisYearOrders;
     public $lastYearOrders;
+    public $IsPdfGenerated;
 
     public function mount()
     {
         $this->selectedYear = date('Y');
+        $this->IsPdfGenerated = false;
         $this->updateOrdersCount();
     }
 
@@ -55,6 +61,35 @@ class ChartOrders extends Component
         $this->lastYearOrders = array_values($months);
 
         $this->dispatch('updateTheChart');
+    }
+
+    public function generatePdf()
+    {
+        // Render the view and save it as HTML
+        $template = view('pdf.example', [
+            'year' => $this->selectedYear,
+            'thisYearOrders' => $this->thisYearOrders,
+            'lastYearOrders' => $this->lastYearOrders
+        ])->render();
+
+        // Generate the PDF
+        // Pdf::html($template)->withBrowsershot(function (Browsershot $browsershot) {
+        //     $browsershot->setIncludePath(env('BROWSER_PATH'));
+        //     $browsershot->waitUntilNetworkIdle();
+        // })->save('orders -- '.$this->selectedYear.'.pdf');
+
+        return pdf()
+            ->view('pdf.googlecharts')
+            ->name('google charts')
+            ->download();
+        // $this->IsPdfGenerated = true;
+        // // Optionally return a response or emit an event
+        // $this->dispatch('pdfGenerated');
+    }
+
+    public function downloadPdf()
+    {
+        return redirect()->route('download.pdf', ['year' => $this->selectedYear]);
     }
 
     public function render()
